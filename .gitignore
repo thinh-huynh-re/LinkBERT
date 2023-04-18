@@ -6,3 +6,5 @@ data*
 
 src/runs
 src/wandb
+env
+tmp

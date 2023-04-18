@@ -18,6 +18,13 @@ LinkBERT can be used as a drop-in replacement for BERT. It achieves better perfo
   <img src="./figs/overview.png" width="1000" title="Overview of LinkBERT" alt="">
 </p>
 
+## Folder structure
+├── data
+│   ├── mc
+│   ├── qa
+│   ├── seqcls
+│   ├── tokcls
+
 
 ## 1. Pretrained Models
 

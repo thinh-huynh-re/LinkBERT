@@ -1,0 +1,7 @@
+torch
+transformers
+datasets
+fairscale
+wandb
+sklearn
+seqeval
