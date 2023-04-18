@@ -8,7 +8,7 @@ task=pubmedqa_hf
 datadir=../data/seqcls/$task
 outdir=runs/$task/$MODEL
 mkdir -p $outdir
-python3 -u seqcls/run_seqcls.py --model_name_or_path $MODEL_PATH \
+../env/bin/python -u seqcls/run_seqcls.py --model_name_or_path $MODEL_PATH \
   --train_file $datadir/train.json --validation_file $datadir/dev.json --test_file $datadir/test.json \
   --do_train --do_eval --do_predict \
   --per_device_train_batch_size 16 --gradient_accumulation_steps 1 --fp16 \
