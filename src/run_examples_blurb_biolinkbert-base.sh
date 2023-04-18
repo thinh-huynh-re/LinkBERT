@@ -13,8 +13,7 @@ mkdir -p $outdir
   --do_train --do_eval --do_predict \
   --per_device_train_batch_size 16 --gradient_accumulation_steps 1 --fp16 \
   --learning_rate 2e-5 --warmup_steps 100 --num_train_epochs 30 --max_seq_length 512 \
-  --save_strategy no --evaluation_strategy no --output_dir $outdir --overwrite_output_dir \
-  |& tee $outdir/log.txt &
+  --save_strategy no --evaluation_strategy no --output_dir $outdir --overwrite_output_dir
 
 ############################### QA: BioASQ ###############################
 # task=bioasq_hf
