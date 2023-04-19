@@ -1,0 +1,49 @@
+{
+  // Use IntelliSense to learn about possible attributes.
+  // Hover to view descriptions of existing attributes.
+  // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Python: Current File",
+      "type": "python",
+      "request": "launch",
+      "program": "src/seqcls/run_seqcls.py",
+      "console": "integratedTerminal",
+      "args": [
+        "--model_name_or_path",
+        "michiyasunaga/BioLinkBERT-base",
+        "--train_file",
+        "data/seqcls/pubmedqa_hf/train.json",
+        "--validation_file",
+        "data/seqcls/pubmedqa_hf/dev.json",
+        "--test_file",
+        "data/seqcls/pubmedqa_hf/test.json",
+        "--do_train",
+        "--do_eval",
+        "--do_predict",
+        "--per_device_train_batch_size",
+        "24",
+        "--gradient_accumulation_steps",
+        "1",
+        "--fp16",
+        "--learning_rate",
+        "2e-5",
+        "--warmup_steps",
+        "100",
+        "--num_train_epochs",
+        "30",
+        "--max_seq_length",
+        "512",
+        "--save_strategy",
+        "no",
+        "--evaluation_strategy",
+        "no",
+        "--output_dir",
+        "runs/pubmedqa_hf/BioLinkBERT-base",
+        "--overwrite_output_dir"
+      ],
+      "justMyCode": true
+    }
+  ]
+}

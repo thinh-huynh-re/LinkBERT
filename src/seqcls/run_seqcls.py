@@ -44,6 +44,9 @@ from transformers import (
     TrainingArguments,
     default_data_collator,
     set_seed,
+    BertTokenizerFast,
+    BertForSequenceClassification,
+    BertConfig,
 )
 from transformers.trainer_utils import get_last_checkpoint
 from transformers.utils import check_min_version
@@ -213,6 +216,10 @@ def main():
     else:
         model_args, data_args, training_args = parser.parse_args_into_dataclasses()
 
+    model_args: ModelArguments
+    data_args: DataTrainingArguments
+    training_args: TrainingArguments
+
     # Setup logging
     logging.basicConfig(
         format="%(asctime)s - %(levelname)s - %(name)s - %(message)s",
@@ -334,7 +341,7 @@ def main():
     #
     # In distributed training, the .from_pretrained methods guarantee that only one local process can concurrently
     # download model & vocab.
-    config = AutoConfig.from_pretrained(
+    config: BertConfig = AutoConfig.from_pretrained(
         model_args.config_name if model_args.config_name else model_args.model_name_or_path,
         num_labels=num_labels,
         finetuning_task=data_args.task_name,
@@ -342,7 +349,7 @@ def main():
         revision=model_args.model_revision,
         use_auth_token=True if model_args.use_auth_token else None,
     )
-    tokenizer = AutoTokenizer.from_pretrained(
+    tokenizer: BertTokenizerFast = AutoTokenizer.from_pretrained(
         model_args.tokenizer_name if model_args.tokenizer_name else model_args.model_name_or_path,
         cache_dir=model_args.cache_dir,
         use_fast=model_args.use_fast_tokenizer,
@@ -350,7 +357,7 @@ def main():
         use_auth_token=True if model_args.use_auth_token else None,
     )
     model_class = AutoModelForSequenceClassification
-    model = model_class.from_pretrained(
+    model: BertForSequenceClassification = model_class.from_pretrained(
         model_args.model_name_or_path,
         from_tf=bool(".ckpt" in model_args.model_name_or_path),
         config=config,
