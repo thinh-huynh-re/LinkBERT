@@ -11,7 +11,7 @@ from tqdm import tqdm
 def dump_jsonl(data, fpath):
     with open(fpath, "w") as outf:
         for d in data:
-            print (json.dumps(d), file=outf)
+            print(json.dumps(d), file=outf)
 
 
 ######################### BLURB sequence classification #########################
@@ -21,11 +21,17 @@ os.system(f"mkdir -p {root}")
 
 def process_pubmedqa(fname):
     dname = "pubmedqa"
-    print (dname, fname)
+    print(dname, fname)
     if fname in ["train", "dev"]:
-        data = json.load(open(f"raw_data/blurb/data_generation/data/pubmedqa/pqal_fold0/{fname}_set.json"))
+        data = json.load(
+            open(
+                f"raw_data/blurb/data_generation/data/pubmedqa/pqal_fold0/{fname}_set.json"
+            )
+        )
     elif fname == "test":
-        data = json.load(open(f"raw_data/blurb/data_generation/data/pubmedqa/{fname}_set.json"))
+        data = json.load(
+            open(f"raw_data/blurb/data_generation/data/pubmedqa/{fname}_set.json")
+        )
     else:
         assert False
     outs, lens = [], []
@@ -35,12 +41,26 @@ def process_pubmedqa(fname):
         question = obj["QUESTION"].strip()
         label = obj["final_decision"].strip()
         assert label in ["yes", "no", "maybe"]
-        outs.append({"id": id, "sentence1": question, "sentence2": context, "label": label})
+        outs.append(
+            {"id": id, "sentence1": question, "sentence2": context, "label": label}
+        )
         lens.append(len(question) + len(context))
-    print ("total", len(outs), "seqlen mean", int(np.mean(lens)), "median", int(np.median(lens)), "95th", int(np.percentile(lens, 95)), "max", np.max(lens))
+    print(
+        "total",
+        len(outs),
+        "seqlen mean",
+        int(np.mean(lens)),
+        "median",
+        int(np.median(lens)),
+        "95th",
+        int(np.percentile(lens, 95)),
+        "max",
+        np.max(lens),
+    )
     #
     os.system(f"mkdir -p {root}/{dname}_hf")
     dump_jsonl(outs, f"{root}/{dname}_hf/{fname}.json")
+
 
 process_pubmedqa("test")
 process_pubmedqa("train")
@@ -49,45 +69,74 @@ process_pubmedqa("dev")
 
 def process_bioasq(fname):
     dname = "bioasq"
-    print (dname, fname)
-    df = pd.read_csv(open(f"raw_data/blurb/data_generation/data/BioASQ/{fname}.tsv"), sep="\t", header=None)
+    print(dname, fname)
+    df = pd.read_csv(
+        open(f"raw_data/blurb/data_generation/data/BioASQ/{fname}.tsv"),
+        sep="\t",
+        header=None,
+    )
     outs, lens = [], []
     for _, row in df.iterrows():
-        id       = row[0].strip()
+        id = row[0].strip()
         question = row[1].strip()
-        context  = row[2].strip()
-        label    = row[3].strip()
+        context = row[2].strip()
+        label = row[3].strip()
         assert label in ["yes", "no"]
-        outs.append({"id": id, "sentence1": question, "sentence2": context, "label": label})
+        outs.append(
+            {"id": id, "sentence1": question, "sentence2": context, "label": label}
+        )
         lens.append(len(question) + len(context))
-    print ("total", len(outs), "seqlen mean", int(np.mean(lens)), "median", int(np.median(lens)), "95th", int(np.percentile(lens, 95)), "max", np.max(lens))
+    print(
+        "total",
+        len(outs),
+        "seqlen mean",
+        int(np.mean(lens)),
+        "median",
+        int(np.median(lens)),
+        "95th",
+        int(np.percentile(lens, 95)),
+        "max",
+        np.max(lens),
+    )
     #
     os.system(f"mkdir -p {root}/{dname}_hf")
     dump_jsonl(outs, f"{root}/{dname}_hf/{fname}.json")
+
 
 process_bioasq("test")
 process_bioasq("dev")
 process_bioasq("train")
 
 
-
 def process_blurb_RE(dname, fname):
-    print (dname, fname)
+    print(dname, fname)
     fpath = f"raw_data/blurb/data_generation/data/{dname}/{fname}.tsv"
     os.system(f"mkdir -p {root}/{dname}_hf")
     lens = []
     with open(f"{root}/{dname}_hf/{fname}.json", "w") as outf:
         for i, line in enumerate(open(fpath)):
-            if i==0 and dname == "GAD":
+            if i == 0 and dname == "GAD":
                 continue
             line = line.strip()
             id, sent, label = line.split("\t")
             if "false" in label:
                 label = "0"
             out = {"id": id, "sentence": sent, "label": label}
-            print (json.dumps(out), file=outf)
+            print(json.dumps(out), file=outf)
             lens.append(len(sent))
-    print ("total", len(lens), "seqlen mean", int(np.mean(lens)), "median", int(np.median(lens)), "95th", int(np.percentile(lens, 95)), "max", np.max(lens))
+    print(
+        "total",
+        len(lens),
+        "seqlen mean",
+        int(np.mean(lens)),
+        "median",
+        int(np.median(lens)),
+        "95th",
+        int(np.percentile(lens, 95)),
+        "max",
+        np.max(lens),
+    )
+
 
 process_blurb_RE("chemprot", "test")
 process_blurb_RE("chemprot", "dev")
@@ -102,23 +151,39 @@ process_blurb_RE("GAD", "dev")
 process_blurb_RE("GAD", "train")
 
 
-
 def process_BIOSSES(fname):
     dname = "BIOSSES"
-    print (dname, fname)
+    print(dname, fname)
     fpath = f"raw_data/blurb/data_generation/data/{dname}/{fname}.tsv"
     os.system(f"mkdir -p {root}/{dname}_hf")
     lens = []
     with open(f"{root}/{dname}_hf/{fname}.json", "w") as outf:
         for i, line in enumerate(open(fpath)):
             line = line.strip()
-            if i==0:
+            if i == 0:
                 continue
             id, sent1, sent2, label = line.split("\t")
-            out = {"sentence1": sent1, "sentence2": sent2, "label": float(label), "id": id}
-            print (json.dumps(out), file=outf)
+            out = {
+                "sentence1": sent1,
+                "sentence2": sent2,
+                "label": float(label),
+                "id": id,
+            }
+            print(json.dumps(out), file=outf)
             lens.append(len(sent1) + len(sent2))
-    print ("total", len(lens), "seqlen mean", int(np.mean(lens)), "median", int(np.median(lens)), "95th", int(np.percentile(lens, 95)), "max", np.max(lens))
+    print(
+        "total",
+        len(lens),
+        "seqlen mean",
+        int(np.mean(lens)),
+        "median",
+        int(np.median(lens)),
+        "95th",
+        int(np.percentile(lens, 95)),
+        "max",
+        np.max(lens),
+    )
+
 
 process_BIOSSES("test")
 process_BIOSSES("dev")
@@ -127,7 +192,7 @@ process_BIOSSES("train")
 
 def process_HOC(fname):
     dname = "HoC"
-    print (dname, fname)
+    print(dname, fname)
     fpath = f"raw_data/blurb/data_generation/data/{dname}/{fname}.tsv"
     os.system(f"mkdir -p {root}/{dname}_hf")
     lens = []
@@ -136,7 +201,7 @@ def process_HOC(fname):
         cur_abs = ""
         cur_label = [0] * 10
         for i, line in enumerate(open(fpath)):
-            if i==0:
+            if i == 0:
                 continue
             line = line.strip()
             label, sent, id = line.split("\t")
@@ -144,25 +209,35 @@ def process_HOC(fname):
             if id.split("_")[0] != cur_abs_id:
                 if cur_abs:
                     out = {"sentence": cur_abs, "label": cur_label, "id": cur_abs_id}
-                    print (json.dumps(out), file=outf)
+                    print(json.dumps(out), file=outf)
                     lens.append(len(cur_abs))
                     cur_abs_id = ""
                     cur_abs = ""
                     cur_label = [0] * 10
             cur_abs_id = id.split("_")[0]
-            cur_abs = (cur_abs +" "+ sent).strip()
+            cur_abs = (cur_abs + " " + sent).strip()
             cur_label = [int(l1 | l2) for l1, l2 in zip(label, cur_label)]
         if cur_abs:
             out = {"sentence": cur_abs, "label": cur_label, "id": cur_abs_id}
-            print (json.dumps(out), file=outf)
+            print(json.dumps(out), file=outf)
             lens.append(len(cur_abs))
-    print ("total", len(lens), "seqlen mean", int(np.mean(lens)), "median", int(np.median(lens)), "95th", int(np.percentile(lens, 95)), "max", np.max(lens))
+    print(
+        "total",
+        len(lens),
+        "seqlen mean",
+        int(np.mean(lens)),
+        "median",
+        int(np.median(lens)),
+        "95th",
+        int(np.percentile(lens, 95)),
+        "max",
+        np.max(lens),
+    )
+
 
 process_HOC("train")
 process_HOC("test")
 process_HOC("dev")
-
-
 
 
 ######################### BLURB token classification #########################
@@ -171,7 +246,7 @@ os.system(f"mkdir -p {root}")
 
 
 def process_blurb_NER(dname, fname):
-    print (dname, fname)
+    print(dname, fname)
     fpath = f"raw_data/blurb/data_generation/data/{dname}/{fname}.tsv"
     outs = []
     lens = []
@@ -199,7 +274,18 @@ def process_blurb_NER(dname, fname):
             lens.append(len(" ".join(tokens)))
             total += len([l for l in labels if l.startswith("B")])
             id += 1
-    print ("total", total, "seqlen mean", int(np.mean(lens)), "median", int(np.median(lens)), "95th", int(np.percentile(lens, 95)), "max", np.max(lens))
+    print(
+        "total",
+        total,
+        "seqlen mean",
+        int(np.mean(lens)),
+        "median",
+        int(np.median(lens)),
+        "95th",
+        int(np.percentile(lens, 95)),
+        "max",
+        np.max(lens),
+    )
     #
     os.system(f"mkdir -p {root}/{dname}_hf")
     dump_jsonl(outs, f"{root}/{dname}_hf/{fname}.json")
@@ -226,9 +312,8 @@ process_blurb_NER("JNLPBA", "dev")
 process_blurb_NER("JNLPBA", "test")
 
 
-
 def process_PICO(dname, fname):
-    print (dname, fname)
+    print(dname, fname)
     fpath = f"raw_data/blurb/data_generation/data/{dname}/{fname}.tsv"
     outs = []
     lens = []
@@ -244,7 +329,7 @@ def process_PICO(dname, fname):
                 if tokens:
                     outs.append({"tokens": tokens, "ner_tags": labels, "id": str(id)})
                     lens.append(len(" ".join(tokens)))
-                    total += len([l for l in labels if l!="O"])
+                    total += len([l for l in labels if l != "O"])
                     tokens, labels = [], []
                     id += 1
                 continue
@@ -256,9 +341,20 @@ def process_PICO(dname, fname):
         if tokens:
             outs.append({"tokens": tokens, "ner_tags": labels, "id": str(id)})
             lens.append(len(" ".join(tokens)))
-            total += len([l for l in labels if l!="O"])
+            total += len([l for l in labels if l != "O"])
             id += 1
-    print ("total", total, "seqlen mean", int(np.mean(lens)), "median", int(np.median(lens)), "95th", int(np.percentile(lens, 95)), "max", np.max(lens))
+    print(
+        "total",
+        total,
+        "seqlen mean",
+        int(np.mean(lens)),
+        "median",
+        int(np.median(lens)),
+        "95th",
+        int(np.percentile(lens, 95)),
+        "max",
+        np.max(lens),
+    )
     #
     os.system(f"mkdir -p {root}/{dname}_hf")
     dump_jsonl(outs, f"{root}/{dname}_hf/{fname}.json")

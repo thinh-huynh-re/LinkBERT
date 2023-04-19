@@ -5,3 +5,4 @@ fairscale
 wandb
 sklearn
 seqeval
+black

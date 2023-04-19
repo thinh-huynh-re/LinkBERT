@@ -29,7 +29,9 @@ class SeqClsTrainer(Trainer):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-    def evaluate(self, eval_dataset=None, ignore_keys=None, metric_key_prefix: str = "eval"):
+    def evaluate(
+        self, eval_dataset=None, ignore_keys=None, metric_key_prefix: str = "eval"
+    ):
         eval_dataset = self.eval_dataset if eval_dataset is None else eval_dataset
         eval_dataloader = self.get_eval_dataloader(eval_dataset)
 
@@ -38,10 +40,10 @@ class SeqClsTrainer(Trainer):
         self.compute_metrics = None
         eval_loop = self.evaluation_loop
         output = eval_loop(
-                eval_dataloader,
-                description="Evaluation",
-                prediction_loss_only=None,
-                ignore_keys=ignore_keys,
+            eval_dataloader,
+            description="Evaluation",
+            prediction_loss_only=None,
+            ignore_keys=ignore_keys,
         )
         # self.label_names = label_names
         self.compute_metrics = compute_metrics
@@ -56,10 +58,14 @@ class SeqClsTrainer(Trainer):
 
         self.log(metrics)
 
-        self.control = self.callback_handler.on_evaluate(self.args, self.state, self.control, metrics)
+        self.control = self.callback_handler.on_evaluate(
+            self.args, self.state, self.control, metrics
+        )
         return metrics
 
-    def predict(self, predict_dataset, ignore_keys=None, metric_key_prefix: str = "test"):
+    def predict(
+        self, predict_dataset, ignore_keys=None, metric_key_prefix: str = "test"
+    ):
         predict_dataloader = self.get_test_dataloader(predict_dataset)
 
         # Temporarily disable metric computation, we will do it in the loop here.
@@ -84,6 +90,8 @@ class SeqClsTrainer(Trainer):
             if not key.startswith(f"{metric_key_prefix}_"):
                 metrics[f"{metric_key_prefix}_{key}"] = metrics.pop(key)
 
-        self.log(metrics) #Added
+        self.log(metrics)  # Added
 
-        return PredictionOutput(predictions=output.predictions, label_ids=output.label_ids, metrics=metrics)
+        return PredictionOutput(
+            predictions=output.predictions, label_ids=output.label_ids, metrics=metrics
+        )
