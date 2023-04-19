@@ -260,6 +260,10 @@ def main():
     else:
         model_args, data_args, training_args = parser.parse_args_into_dataclasses()
 
+    model_args: ModelArguments
+    data_args: DataTrainingArguments
+    training_args: TrainingArguments
+
     # Setup logging
     logging.basicConfig(
         format="%(asctime)s - %(levelname)s - %(name)s - %(message)s",

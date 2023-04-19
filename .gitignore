@@ -8,3 +8,5 @@ src/runs
 src/wandb
 env
 tmp
+
+__pycache__
